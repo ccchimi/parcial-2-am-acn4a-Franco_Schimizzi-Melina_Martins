@@ -1,13 +1,18 @@
 package com.app.tasteit;
 
 public class Recipe {
-    private final String title;
-    private final String description;
-    private final String imageUrl;
-    private final String cookingTime;
+    private String title;
+    private String category;
+    private String description;
+    private String imageUrl;
+    private String cookingTime;
 
-    public Recipe(String title, String description, String imageUrl, String cookingTime) {
+    public Recipe() {
+    }
+
+    public Recipe(String title, String category, String description, String imageUrl, String cookingTime) {
         this.title = title;
+        this.category = category;
         this.description = description;
         this.imageUrl = imageUrl;
         this.cookingTime = cookingTime;
@@ -15,6 +20,10 @@ public class Recipe {
 
     public String getTitle() {
         return title;
+    }
+
+    public String getCategory() {
+        return category;
     }
 
     public String getDescription() {
