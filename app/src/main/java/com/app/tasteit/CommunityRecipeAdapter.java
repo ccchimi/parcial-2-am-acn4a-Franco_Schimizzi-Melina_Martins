@@ -50,8 +50,9 @@ public class CommunityRecipeAdapter extends RecyclerView.Adapter<CommunityRecipe
 
         holder.title.setText(recipe.getTitle());
         holder.author.setText("Por @" + recipe.getAuthor());
+        // Solo el tiempo, así queda bien con el layout pro
+        holder.time.setText(recipe.getCookingTime());
         holder.description.setText(recipe.getDescription());
-        holder.time.setText("Tiempo: " + recipe.getCookingTime());
 
         Glide.with(context)
                 .load(recipe.getImageUrl())
@@ -59,15 +60,30 @@ public class CommunityRecipeAdapter extends RecyclerView.Adapter<CommunityRecipe
                 .error(R.drawable.tastel)
                 .into(holder.image);
 
-        // Abrir detalle
+        // Estado inicial del favorito segun si está en SharedPreferences
+        boolean isFav = isInFavorites(recipe);
+        holder.setFavorite(isFav);
+
         holder.itemView.setOnClickListener(v -> {
             Intent intent = new Intent(context, CommunityRecipeDetailActivity.class);
             intent.putExtra("recipe_index", holder.getAdapterPosition());
             context.startActivity(intent);
         });
 
-        // Agregar a favoritos (con marca de que viene de comunidad)
-        holder.btnFav.setOnClickListener(v -> addToFavoritesFromCommunity(recipe));
+        // Toggle de favoritos desde comunidad
+        holder.btnFav.setOnClickListener(v -> {
+            if (holder.isFavorite) {
+                // Quitar de favoritos
+                removeFromFavorites(recipe);
+                holder.setFavorite(false);
+                Toast.makeText(context, "Eliminado de favoritos", Toast.LENGTH_SHORT).show();
+            } else {
+                // Agregar a favoritos
+                addToFavoritesFromCommunity(recipe);
+                holder.setFavorite(true);
+                // El método de abajo ya muestra el Toast de agregado
+            }
+        });
     }
 
     @Override
@@ -78,6 +94,7 @@ public class CommunityRecipeAdapter extends RecyclerView.Adapter<CommunityRecipe
     static class CommunityViewHolder extends RecyclerView.ViewHolder {
         ImageView image, btnFav;
         TextView title, author, description, time;
+        boolean isFavorite = false;
 
         public CommunityViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -88,6 +105,41 @@ public class CommunityRecipeAdapter extends RecyclerView.Adapter<CommunityRecipe
             description = itemView.findViewById(R.id.communityDescription);
             time = itemView.findViewById(R.id.communityTime);
         }
+
+        void setFavorite(boolean favorite) {
+            isFavorite = favorite;
+            // Usamos los mismos drawables del layout original pero cambiando según estado
+            btnFav.setImageResource(
+                    favorite ? android.R.drawable.btn_star_big_on : android.R.drawable.btn_star_big_off
+            );
+            btnFav.setContentDescription(
+                    favorite ? "Quitar de favoritos" : "Agregar a favoritos"
+            );
+        }
+    }
+
+    // ----- Helpers de favoritos -----
+
+    private boolean isInFavorites(CommunityRecipe cRecipe) {
+        String currentUser = LoginActivity.currentUser;
+        if (currentUser == null) return false;
+
+        SharedPreferences sharedPrefs = context.getSharedPreferences("FavoritesPrefs", Context.MODE_PRIVATE);
+        String key = "favorites_" + currentUser;
+        String json = sharedPrefs.getString(key, null);
+        if (json == null) return false;
+
+        Type type = new TypeToken<List<Recipe>>() {}.getType();
+        List<Recipe> favorites = gson.fromJson(json, type);
+        if (favorites == null) return false;
+
+        for (Recipe r : favorites) {
+            if (r.getTitle().equals(cRecipe.getTitle())
+                    && "Comunidad".equals(r.getCategory())) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private void addToFavoritesFromCommunity(CommunityRecipe cRecipe) {
@@ -100,11 +152,13 @@ public class CommunityRecipeAdapter extends RecyclerView.Adapter<CommunityRecipe
         SharedPreferences sharedPrefs = context.getSharedPreferences("FavoritesPrefs", Context.MODE_PRIVATE);
         String key = "favorites_" + currentUser;
         String json = sharedPrefs.getString(key, null);
-        Type type = new TypeToken<List<Recipe>>(){}.getType();
+        Type type = new TypeToken<List<Recipe>>() {}.getType();
         List<Recipe> favorites = json == null ? new ArrayList<>() : gson.fromJson(json, type);
 
+        // Evitar duplicar la misma receta de comunidad
         for (Recipe r : favorites) {
-            if (r.getTitle().equals(cRecipe.getTitle())) {
+            if (r.getTitle().equals(cRecipe.getTitle())
+                    && "Comunidad".equals(r.getCategory())) {
                 Toast.makeText(context, context.getString(R.string.already_favorite), Toast.LENGTH_SHORT).show();
                 return;
             }
@@ -124,5 +178,36 @@ public class CommunityRecipeAdapter extends RecyclerView.Adapter<CommunityRecipe
         favorites.add(fav);
         sharedPrefs.edit().putString(key, gson.toJson(favorites)).apply();
         Toast.makeText(context, context.getString(R.string.added_favorite), Toast.LENGTH_SHORT).show();
+    }
+
+    private void removeFromFavorites(CommunityRecipe cRecipe) {
+        String currentUser = LoginActivity.currentUser;
+        if (currentUser == null) {
+            return;
+        }
+
+        SharedPreferences sharedPrefs = context.getSharedPreferences("FavoritesPrefs", Context.MODE_PRIVATE);
+        String key = "favorites_" + currentUser;
+        String json = sharedPrefs.getString(key, null);
+        if (json == null) {
+            return;
+        }
+
+        Type type = new TypeToken<List<Recipe>>() {}.getType();
+        List<Recipe> favorites = gson.fromJson(json, type);
+        if (favorites == null || favorites.isEmpty()) {
+            return;
+        }
+
+        for (int i = 0; i < favorites.size(); i++) {
+            Recipe r = favorites.get(i);
+            if (r.getTitle().equals(cRecipe.getTitle())
+                    && "Comunidad".equals(r.getCategory())) {
+                favorites.remove(i);
+                break;
+            }
+        }
+
+        sharedPrefs.edit().putString(key, gson.toJson(favorites)).apply();
     }
 }

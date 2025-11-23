@@ -33,6 +33,13 @@
     <string name="removed_favorite">Receta eliminada de favoritos</string>
     <string name="no_favorites">No tienes recetas favoritas aún</string>
 
+    <!-- Comunidad -->
+    <string name="community_badge">Comunidad</string>
+    <string name="add_to_favorites">Agregar a favoritos</string>
+    <string name="remove_from_favorites">Quitar de favoritos</string>
+    <string name="community_recipe_image">Imagen de receta de la comunidad</string>
+
+
     <!-- Recipe detail -->
     <string name="recipe_back">Volver</string>
     <string name="recipe_add_fav">⭐ Favorito</string>
