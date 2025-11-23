@@ -138,7 +138,7 @@ public class CommunityActivity extends AppCompatActivity {
                 "Pan brioche relleno con dulce de leche y bañado en huevo, leche y canela. Ideal para un brunch potente.",
                 "https://images.pexels.com/photos/4109990/pexels-photo-4109990.jpeg",
                 "20 min",
-                "Melina"
+                "Usuario prueba 1"
         ));
 
         list.add(new CommunityRecipe(
@@ -146,7 +146,7 @@ public class CommunityActivity extends AppCompatActivity {
                 "Garbanzos especiados al horno, mix de hojas verdes, palta, tomate cherry y aderezo de tahini.",
                 "https://images.pexels.com/photos/1640770/pexels-photo-1640770.jpeg",
                 "25 min",
-                "Franco"
+                "Usuario prueba 2"
         ));
 
         list.add(new CommunityRecipe(
@@ -154,7 +154,7 @@ public class CommunityActivity extends AppCompatActivity {
                 "Fideos, caldo, crema y parmesano: todo en una sola olla, sin colar. Súper rápida para los días apurados.",
                 "https://images.pexels.com/photos/6287521/pexels-photo-6287521.jpeg",
                 "30 min",
-                "admin"
+                "admin (editable)"
         ));
 
         return list;
