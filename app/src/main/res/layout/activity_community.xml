@@ -36,7 +36,7 @@
 
             </androidx.appcompat.widget.Toolbar>
 
-            <!-- Hero con explicacion -->
+            <!-- Hero con explicación -->
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -69,7 +69,7 @@
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
-            <!-- Titulo lista -->
+            <!-- Título lista -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -96,7 +96,7 @@
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/margin_m"
             android:contentDescription="Agregar receta"
-            app:srcCompat="@drawable/ic_add"
+            app:srcCompat="@android:drawable/ic_input_add"
             app:backgroundTint="@color/primary"
             app:layout_anchorGravity="bottom|end"
             app:layout_anchor="@id/rvCommunity"/>
