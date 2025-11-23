@@ -114,7 +114,7 @@
                     android:layout_width="@dimen/icon_size"
                     android:layout_height="@dimen/icon_size"
                     android:padding="@dimen/padding_xs"
-                    android:src="@drawable/ic_favorite_border_24"
+                    android:src="@android:drawable/btn_star_big_off"
                     android:contentDescription="@string/add_to_favorites"
                     android:background="?attr/selectableItemBackgroundBorderless" />
             </LinearLayout>

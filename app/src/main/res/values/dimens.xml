@@ -10,6 +10,7 @@
     <dimen name="padding_s">8dp</dimen>
     <dimen name="padding_m">16dp</dimen>
     <dimen name="padding_l">24dp</dimen>
+    <dimen name="padding_xs">4dp</dimen>
 
     <!-- Tamaños de texto -->
     <dimen name="text_small">12sp</dimen>
