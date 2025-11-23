@@ -23,8 +23,9 @@
             android:scaleType="centerCrop"
             android:adjustViewBounds="true"
             android:src="@drawable/tastel"
+            android:contentDescription="Imagen de receta"
             android:background="@drawable/edit_text_background"
-            android:clipToOutline="true"/>
+            android:clipToOutline="true" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -43,16 +44,16 @@
                 android:textSize="@dimen/text_medium"
                 android:textColor="@color/textPrimary"
                 android:maxLines="1"
-                android:ellipsize="end"/>
+                android:ellipsize="end" />
 
             <TextView
                 android:id="@+id/communityAuthor"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@autor"
+                android:text="Autor desconocido"
                 android:textSize="@dimen/text_small"
                 android:textColor="@color/secondary"
-                android:layout_marginTop="@dimen/margin_xs"/>
+                android:layout_marginTop="@dimen/margin_xs" />
 
             <TextView
                 android:id="@+id/communityDescription"
@@ -63,7 +64,7 @@
                 android:textColor="@color/textSecondary"
                 android:layout_marginTop="@dimen/margin_xs"
                 android:maxLines="2"
-                android:ellipsize="end"/>
+                android:ellipsize="end" />
 
             <TextView
                 android:id="@+id/communityTime"
@@ -72,19 +73,18 @@
                 android:text="Tiempo: 20 min"
                 android:textSize="@dimen/text_small"
                 android:textColor="@color/textSecondary"
-                android:layout_marginTop="@dimen/margin_xs"/>
+                android:layout_marginTop="@dimen/margin_xs" />
         </LinearLayout>
 
         <ImageView
             android:id="@+id/btnFavFromCommunity"
             android:layout_width="@dimen/icon_size"
             android:layout_height="@dimen/icon_size"
-            android:src="@drawable/favorito"
+            android:src="@android:drawable/btn_star_big_off"
             android:contentDescription="Agregar a favoritos"
             android:layout_alignParentEnd="true"
             android:layout_marginEnd="@dimen/margin_s"
-            android:layout_marginTop="@dimen/margin_s"/>
-
+            android:layout_marginTop="@dimen/margin_s" />
     </RelativeLayout>
 
 </com.google.android.material.card.MaterialCardView>
