@@ -61,7 +61,7 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Publicá tus ideas, inspírate con otros usuarios y guarda en favoritos lo que más te guste. Más adelante, todo esto vivirá en Firebase."
+                        android:text="Publicá tus ideas, inspírate con otros usuarios y guarda en favoritos lo que más te guste."
                         android:textSize="@dimen/text_normal"
                         android:textColor="@color/textSecondary"
                         android:layout_marginTop="@dimen/margin_s"/>
