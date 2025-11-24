@@ -59,13 +59,30 @@ public class CommunityRecipeDetailActivity extends AppCompatActivity {
         communityPrefs = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
         loadCommunityRecipes();
 
-        recipeIndex = getIntent().getIntExtra("recipe_index", -1);
-        if (recipeIndex < 0 || recipeIndex >= communityRecipes.size()) {
+        String title = getIntent().getStringExtra("recipe_title");
+        String author = getIntent().getStringExtra("recipe_author");
+
+        if (title == null || author == null) {
             finish();
             return;
         }
 
-        recipe = communityRecipes.get(recipeIndex);
+        recipeIndex = -1;
+        for (int i = 0; i < communityRecipes.size(); i++) {
+            CommunityRecipe r = communityRecipes.get(i);
+            if (title.equals(r.getTitle()) && author.equals(r.getAuthor())) {
+                recipeIndex = i;
+                recipe = r;
+                break;
+            }
+        }
+
+        if (recipeIndex == -1) {
+            // No se encontro la receta en la lista guardada
+            finish();
+            return;
+        }
+
         bindData();
 
         btnBack.setOnClickListener(v -> finish());

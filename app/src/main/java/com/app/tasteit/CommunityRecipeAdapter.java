@@ -66,7 +66,8 @@ public class CommunityRecipeAdapter extends RecyclerView.Adapter<CommunityRecipe
 
         holder.itemView.setOnClickListener(v -> {
             Intent intent = new Intent(context, CommunityRecipeDetailActivity.class);
-            intent.putExtra("recipe_index", holder.getAdapterPosition());
+            intent.putExtra("recipe_title", recipe.getTitle());
+            intent.putExtra("recipe_author", recipe.getAuthor());
             context.startActivity(intent);
         });
 
