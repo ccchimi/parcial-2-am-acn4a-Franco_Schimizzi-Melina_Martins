@@ -252,57 +252,172 @@
                 android:overScrollMode="never"
                 android:nestedScrollingEnabled="false"/>
 
-            <!-- TIPS RÁPIDOS -->
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Tips rápidos de la cocina Tastel"
-                android:textStyle="bold"
-                android:textSize="@dimen/text_medium"
-                android:layout_marginTop="@dimen/margin_l"/>
-
-            <LinearLayout
+            <!-- TIPS RÁPIDOS (CARD) -->
+            <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_marginTop="@dimen/margin_s">
+                android:layout_marginTop="@dimen/margin_l"
+                app:cardCornerRadius="@dimen/card_radius_large"
+                app:cardElevation="@dimen/card_elevation_small">
 
-                <TextView
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="• Guardá tus recetas favoritas y tenelas siempre a un toque."
-                    android:textSize="@dimen/text_normal"/>
+                    android:orientation="vertical"
+                    android:padding="@dimen/padding_m">
 
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="• Usá el buscador para encontrar recetas por ingrediente o nombre."
-                    android:textSize="@dimen/text_normal"
-                    android:layout_marginTop="@dimen/margin_xs"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Tips rápidos para sacarle jugo a Tastel"
+                        android:textStyle="bold"
+                        android:textSize="@dimen/text_medium"
+                        android:textColor="@color/textPrimary"/>
 
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="• Volvé seguido: vamos sumando nuevas ideas todas las semanas."
-                    android:textSize="@dimen/text_normal"
-                    android:layout_marginTop="@dimen/margin_xs"/>
-            </LinearLayout>
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginTop="@dimen/margin_s">
 
-            <!-- DESDE LA COMUNIDAD -->
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Desde la comunidad"
-                android:textStyle="bold"
-                android:textSize="@dimen/text_medium"
-                android:layout_marginTop="@dimen/margin_l"/>
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="⭐"
+                            android:textSize="@dimen/text_medium"
+                            android:layout_marginEnd="@dimen/margin_s"/>
 
-            <TextView
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="Guardá tus recetas favoritas y tenelas siempre a un toque."
+                            android:textSize="@dimen/text_normal"
+                            android:textColor="@color/textSecondary"/>
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginTop="@dimen/margin_xs">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="🔍"
+                            android:textSize="@dimen/text_medium"
+                            android:layout_marginEnd="@dimen/margin_s"/>
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="Usá el buscador para encontrar recetas por ingrediente o nombre."
+                            android:textSize="@dimen/text_normal"
+                            android:textColor="@color/textSecondary"/>
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginTop="@dimen/margin_xs">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="🕒"
+                            android:textSize="@dimen/text_medium"
+                            android:layout_marginEnd="@dimen/margin_s"/>
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="Volvé seguido: vamos sumando nuevas ideas todas las semanas."
+                            android:textSize="@dimen/text_normal"
+                            android:textColor="@color/textSecondary"/>
+                    </LinearLayout>
+
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- DESDE LA COMUNIDAD (CARD) -->
+            <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Encontrá en el foro ideas, trucos y recomendaciones de otros usuarios que cocinan como vos. Compartí tus propias creaciones y armá tu libro de recetas digital."
-                android:textSize="@dimen/text_normal"
-                android:layout_marginTop="@dimen/margin_s"/>
+                android:layout_marginTop="@dimen/margin_m"
+                android:layout_marginBottom="@dimen/margin_l"
+                app:cardCornerRadius="@dimen/card_radius_large"
+                app:cardElevation="@dimen/card_elevation_small">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="@dimen/padding_m">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Desde la comunidad"
+                        android:textStyle="bold"
+                        android:textSize="@dimen/text_medium"
+                        android:textColor="@color/textPrimary"/>
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Encontrá en el foro ideas, trucos y recomendaciones de otros usuarios que cocinan como vos. Compartí tus propias creaciones y armá tu libro de recetas digital."
+                        android:textSize="@dimen/text_normal"
+                        android:textColor="@color/textSecondary"
+                        android:layout_marginTop="@dimen/margin_s"/>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginTop="@dimen/margin_m">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:paddingLeft="@dimen/padding_s"
+                            android:paddingRight="@dimen/padding_s"
+                            android:paddingTop="@dimen/padding_xs"
+                            android:paddingBottom="@dimen/padding_xs"
+                            android:text="Publicá"
+                            android:textSize="@dimen/text_small"
+                            android:background="@drawable/bg_community_badge"/>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="@dimen/margin_s"
+                            android:paddingLeft="@dimen/padding_s"
+                            android:paddingRight="@dimen/padding_s"
+                            android:paddingTop="@dimen/padding_xs"
+                            android:paddingBottom="@dimen/padding_xs"
+                            android:text="Guardá"
+                            android:textSize="@dimen/text_small"
+                            android:background="@drawable/bg_community_badge"/>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="@dimen/margin_s"
+                            android:paddingLeft="@dimen/padding_s"
+                            android:paddingRight="@dimen/padding_s"
+                            android:paddingTop="@dimen/padding_xs"
+                            android:paddingBottom="@dimen/padding_xs"
+                            android:text="Comentá"
+                            android:textSize="@dimen/text_small"
+                            android:background="@drawable/bg_community_badge"/>
+                    </LinearLayout>
+
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
 
         </LinearLayout>
     </ScrollView>
