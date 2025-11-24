@@ -136,7 +136,7 @@ public class MainActivity extends AppCompatActivity {
         highlights.add(new HomeHighlight(
                 "Postres que no fallan",
                 "Tiramisú, budines y algo dulce para cerrar.",
-                "https://images.pexels.com/photos/3026808/pexels-photo-3026808.jpeg"
+                "https://pekis.net/sites/default/files/styles/social_share_1200/public/2025-04/tiramisu.jpg?itok=lVwjUayR"
         ));
 
         HomeHighlightAdapter highlightAdapter = new HomeHighlightAdapter(this, highlights);
