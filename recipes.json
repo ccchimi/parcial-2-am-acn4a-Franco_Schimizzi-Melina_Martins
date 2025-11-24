@@ -3,42 +3,140 @@
     "title": "Spaghetti Bolognesa",
     "category": "Pastas",
     "description": "Clásica pasta italiana con salsa de carne y tomate.",
-    "imageUrl": "https://cdn.stoneline.de/media/c5/63/4f/1727429313/spaghetti-bolognese.jpeg?ts=1727429313",
+    "imageUrl": "https://www.recipetineats.com/tachyon/2018/07/Spaghetti-Bolognese.jpg",
     "cookingTime": "30 min"
   },
   {
     "title": "Fettuccine Alfredo",
     "category": "Pastas",
     "description": "Crema, manteca y parmesano para una salsa sedosa.",
-    "imageUrl": "https://www.thespruceeats.com/thmb/gTjo1gnOuBEVJsttgDW2JljvKY0=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/shrimp-fettuccine-alfredo-recipe-5205738-hero-01-1a40571b0e3e4a17ab768b4d700c7836.jpg",
+    "imageUrl": "https://www.allrecipes.com/thmb/6iFrYmTh80DMqrMAOYTYKfBawvY=/0x512/filters:no_upscale():max_bytes(150000):strip_icc()/AR-23431-to-die-for-fettuccine-alfredo-DDMFS-beauty-3x4-b64d36c7ff314cb39774e261c5b18352.jpg",
     "cookingTime": "25 min"
   },
   {
     "title": "Lasagna de Verduras",
     "category": "Pastas",
     "description": "Capas de vegetales asados y bechamel.",
-    "imageUrl": "https://www.bekiacocina.com/images/cocina/0000/976-h.jpg",
+    "imageUrl": "https://imagenes.elpais.com/resizer/v2/4CKPGP62NNEJ3EOO7VWUDNBFYY.png?auth=26940ec22f0a45914730f0695dc0507717c910ae7d061186f35b12cd72b776a0&width=1960&height=1470&smart=true",
     "cookingTime": "40 min"
   },
   {
     "title": "Pollo al horno",
     "category": "Carnes",
     "description": "Jugoso pollo al horno con especias.",
-    "imageUrl": "https://i.ytimg.com/vi/DBgGtCWWD5Q/maxresdefault.jpg",
+    "imageUrl": "https://recetas.encolombia.com/wp-content/uploads/2012/12/Pollo-Asado-alHorno.jpg",
     "cookingTime": "50 min"
   },
   {
     "title": "Asado clásico",
     "category": "Carnes",
     "description": "Costillar con chimichurri y fuego lento.",
-    "imageUrl": "https://www.res.com.ar/media/catalog/product/cache/6c63de560a15562fe08de38c3c766637/a/s/asado_clasico_l.jpg",
+    "imageUrl": "https://www.frigorificosada.com.ar/blog/wp-content/uploads/2023/07/Como-hacer-un-asado-argentino-a-la-parrilla.jpg",
     "cookingTime": "2 hs"
   },
   {
     "title": "Ensalada César",
     "category": "Ensaladas",
     "description": "Lechuga, pollo, crutones y aderezo César.",
-    "imageUrl": "https://www.goodnes.com/sites/g/files/jgfbjl321/files/srh_recipes/755f697272cbcdc6e5df2adb44b1b705.jpg",
+    "imageUrl": "https://cdn5.recetasdeescandalo.com/wp-content/uploads/2016/06/Ensalada-cesar-con-pollo-y-su-salsa-casera.-Receta-e-ingredientes.jpg",
     "cookingTime": "15 min"
+  },
+  {
+    "title": "Hamburguesas de lentejas",
+    "category": "Veggie",
+    "description": "Medallones de lentejas con avena y verduras salteadas, ideales para acompañar con ensalada.",
+    "imageUrl": "https://i.ytimg.com/vi/Krkvi8HvMRs/maxresdefault.jpg",
+    "cookingTime": "30 min"
+  },
+  {
+    "title": "Buddha bowl de quinoa",
+    "category": "Veggie",
+    "description": "Bol de quinoa con garbanzos, vegetales asados, hojas verdes y aderezo de tahini.",
+    "imageUrl": "https://feelgoodfoodie.net/wp-content/uploads/2017/12/Quinoa-Buddha-Bowl-4.jpg",
+    "cookingTime": "25 min"
+  },
+  {
+    "title": "Brownies de chocolate",
+    "category": "Postres",
+    "description": "Brownies húmedos de chocolate con nueces, perfectos para acompañar con helado.",
+    "imageUrl": "https://www.recipetineats.com/tachyon/2020/03/Brownies_0-SQ.jpg",
+    "cookingTime": "35 min"
+  },
+  {
+    "title": "Cheesecake de frutos rojos",
+    "category": "Postres",
+    "description": "Tarta cremosa de queso con base de galletitas y cobertura de salsa de frutos rojos.",
+    "imageUrl": "https://www.paulinacocina.net/wp-content/uploads/2025/01/receta-de-cheesecake-1742898428.jpg",
+    "cookingTime": "1 h 15 min"
+  },
+  {
+    "title": "Sopa de calabaza cremosa",
+    "category": "Sopas",
+    "description": "Crema suave de calabaza con un toque de jengibre y croutones caseros.",
+    "imageUrl": "https://www.recipetineats.com/tachyon/2017/10/Pumpkin-Soup-2.jpg",
+    "cookingTime": "35 min"
+  },
+  {
+    "title": "Minestrone de verduras",
+    "category": "Sopas",
+    "description": "Sopa italiana con variedad de verduras, porotos y pasta corta.",
+    "imageUrl": "https://veggiefestchicago.org/wp-content/uploads/2018/10/minestrone-soup-recipe.jpg",
+    "cookingTime": "40 min"
+  },
+  {
+    "title": "Risotto de hongos",
+    "category": "Arroces",
+    "description": "Arroz cremoso cocido lentamente con caldo, vino blanco y mezcla de hongos salteados.",
+    "imageUrl": "https://static01.nyt.com/images/2024/01/10/multimedia/10Risotto-gcmz/10Risotto-gcmz-mediumSquareAt3X.jpg",
+    "cookingTime": "35 min"
+  },
+  {
+    "title": "Arroz salteado con verduras y huevo",
+    "category": "Arroces",
+    "description": "Arroz estilo oriental con zanahoria, arvejas, verdeo y huevo revuelto.",
+    "imageUrl": "https://www.haceloconhuevos.com/wp-content/uploads/2022/02/arroz-frito-con-huevo.jpg",
+    "cookingTime": "20 min"
+  },
+  {
+    "title": "Salmón al horno con limón y hierbas",
+    "category": "Pescados y mariscos",
+    "description": "Filetes de salmón horneados con rodajas de limón, aceite de oliva y hierbas frescas.",
+    "imageUrl": "https://i.blogs.es/492fe7/salmon-al-horno-con-hierbas/450_1000.jpg",
+    "cookingTime": "25 min"
+  },
+  {
+    "title": "Tacos de pescado crocante",
+    "category": "Pescados y mariscos",
+    "description": "Tacos con bastones de pescado rebozado, col rallada y salsa de yogur y lima.",
+    "imageUrl": "https://blog.pizcadesabor.com/wp-content/uploads/2019/08/3-Tacos-de-pescado.jpg",
+    "cookingTime": "30 min"
+  },
+  {
+    "title": "Bruschettas de tomate y albahaca",
+    "category": "Tapas y snacks",
+    "description": "Rebanadas de pan tostado con tomate fresco, ajo, aceite de oliva y albahaca.",
+    "imageUrl": "https://global.filippoberio.com/wp-content/uploads/2014/05/bruschetta-tomato-basil.jpg",
+    "cookingTime": "15 min"
+  },
+  {
+    "title": "Palitos de queso al horno",
+    "category": "Tapas y snacks",
+    "description": "Bastones de masa rellenos de queso derretido, ideales para picar con salsas.",
+    "imageUrl": "https://www.recetasjudias.com/wp-content/uploads/2015/06/Palitos-de-Queso-500x500.png",
+    "cookingTime": "20 min"
+  },
+  {
+    "title": "Panqueques de harina de arroz sin TACC",
+    "category": "Sin TACC",
+    "description": "Panqueques livianos hechos con harina de arroz, aptos para celíacos.",
+    "imageUrl": "https://terrunioalmacennatural.com/wp-content/uploads/2022/07/panque2.jpg",
+    "cookingTime": "25 min"
+  },
+  {
+    "title": "Budín de mandarina sin TACC",
+    "category": "Sin TACC",
+    "description": "Budín húmedo de mandarina preparado con harinas sin gluten.",
+    "imageUrl": "https://www.soyceliaconoextraterrestre.com/wp-content/uploads/2021/05/budin-de-mandarina-sin-TACC.jpg",
+    "cookingTime": "45 min"
   }
 ]
