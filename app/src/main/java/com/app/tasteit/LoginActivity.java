@@ -11,16 +11,19 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 public class LoginActivity extends AppCompatActivity {
 
-    private EditText etEmail, etPassword;
+    private EditText etUsername, etPassword;
     private Button btnLogin, btnCreateUser;
     private TextView tvForgot;
 
     private FirebaseAuth auth;
+    private FirebaseFirestore db;
 
-    public static String currentUser = null;
+    public static String currentUser = null; // ahora guardamos USERNAME, no email
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,8 +31,9 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
 
         auth = FirebaseAuth.getInstance();
+        db = FirebaseFirestore.getInstance();
 
-        etEmail = findViewById(R.id.etUsername);     // ahora es email real por la integracion con firebase
+        etUsername = findViewById(R.id.etUsername);
         etPassword = findViewById(R.id.etPassword);
         btnLogin = findViewById(R.id.btnLogin);
         btnCreateUser = findViewById(R.id.btnCreateUser);
@@ -37,7 +41,8 @@ public class LoginActivity extends AppCompatActivity {
 
         // Si ya estaba logueado lo mando al Home
         if (auth.getCurrentUser() != null) {
-            currentUser = auth.getCurrentUser().getEmail();
+            // Recupero username guardado
+            currentUser = auth.getCurrentUser().getDisplayName();
             startActivity(new Intent(this, MainActivity.class));
             finish();
         }
@@ -48,52 +53,93 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void loginUser() {
-        String email = etEmail.getText().toString().trim();
+        String username = etUsername.getText().toString().trim();
         String pass = etPassword.getText().toString().trim();
 
-        if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            etEmail.setError("Email inválido");
+        if (username.isEmpty()) {
+            etUsername.setError("Ingrese un nombre de usuario");
             return;
         }
         if (pass.isEmpty()) {
-            etPassword.setError("Ingrese contraseña");
+            etPassword.setError("Ingrese la contraseña");
             return;
         }
 
-        auth.signInWithEmailAndPassword(email, pass)
-                .addOnSuccessListener(result -> {
-                    currentUser = email;
-                    Toast.makeText(this, "Bienvenido " + email, Toast.LENGTH_SHORT).show();
-                    startActivity(new Intent(this, MainActivity.class));
-                    finish();
+        // 1️⃣ Buscar email REAL de ese username
+        db.collection("users")
+                .document(username)   // username = ID único en Firestore
+                .get()
+                .addOnSuccessListener(doc -> {
+
+                    if (!doc.exists()) {
+                        Toast.makeText(this, "El usuario no existe", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+
+                    String email = doc.getString("email");
+
+                    if (email == null || !Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+                        Toast.makeText(this, "El usuario no tiene un email válido", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+
+                    // 2️⃣ Autenticar con FirebaseAuth usando email real
+                    auth.signInWithEmailAndPassword(email, pass)
+                            .addOnSuccessListener(authResult -> {
+
+                                // 3️⃣ Guardamos currentUser como username, NO como email
+                                currentUser = username;
+
+                                Toast.makeText(this, "Bienvenido " + username, Toast.LENGTH_SHORT).show();
+                                startActivity(new Intent(this, MainActivity.class));
+                                finish();
+                            })
+                            .addOnFailureListener(e ->
+                                    Toast.makeText(this, "Error: " + e.getMessage(), Toast.LENGTH_SHORT).show()
+                            );
+
                 })
                 .addOnFailureListener(e ->
-                        Toast.makeText(this, "Error: " + e.getMessage(), Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this, "Error al buscar usuario: " + e.getMessage(), Toast.LENGTH_SHORT).show()
                 );
     }
 
     private void resetPassword() {
-        String email = etEmail.getText().toString().trim();
+        String username = etUsername.getText().toString().trim();
 
-        if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            Toast.makeText(this, "Ingresá un email válido primero", Toast.LENGTH_SHORT).show();
+        if (username.isEmpty()) {
+            Toast.makeText(this, "Ingresá un usuario para recuperar contraseña", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        auth.sendPasswordResetEmail(email)
-                .addOnSuccessListener(v ->
-                        Toast.makeText(this, "Se envió un email para recuperar contraseña", Toast.LENGTH_LONG).show()
-                )
-                .addOnFailureListener(e ->
-                        Toast.makeText(this, "Error: " + e.getMessage(), Toast.LENGTH_SHORT).show()
-                );
+        db.collection("users")
+                .document(username)
+                .get()
+                .addOnSuccessListener(doc -> {
+
+                    if (!doc.exists()) {
+                        Toast.makeText(this, "El usuario no existe", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+
+                    String email = doc.getString("email");
+
+                    auth.sendPasswordResetEmail(email)
+                            .addOnSuccessListener(v ->
+                                    Toast.makeText(this, "Enviamos un email para restablecer la contraseña", Toast.LENGTH_LONG).show()
+                            )
+                            .addOnFailureListener(e ->
+                                    Toast.makeText(this, "Error: " + e.getMessage(), Toast.LENGTH_SHORT).show()
+                            );
+
+                });
     }
 
     private void goToRegister() {
         startActivity(new Intent(this, RegisterActivity.class));
     }
 
-    // Método usado por ProfileActivity
+    // Usado por ProfileActivity
     public static void logout(AppCompatActivity activity) {
         FirebaseAuth.getInstance().signOut();
         currentUser = null;
