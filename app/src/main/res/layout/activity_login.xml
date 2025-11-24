@@ -67,8 +67,8 @@
                 android:layout_height="@dimen/button_height"
                 android:text="@string/login_create_user"
                 android:layout_marginTop="@dimen/margin_s"
-                android:backgroundTint="@color/primaryPastel"
-                android:textColor="@color/textPrimary"/>
+                android:backgroundTint="@color/primary"
+                android:textColor="@android:color/white"/>
 
             <!-- Olvidaste contraseña -->
             <TextView
@@ -76,10 +76,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/login_forgot_password"
-                android:textColor="@color/primary"
                 android:layout_marginTop="@dimen/margin_m"
-                android:layout_gravity="center_horizontal"/>
-
+                android:layout_gravity="center_horizontal"
+                android:textColor="@color/textPrimary"/>
         </LinearLayout>
 
     </com.google.android.material.card.MaterialCardView>
