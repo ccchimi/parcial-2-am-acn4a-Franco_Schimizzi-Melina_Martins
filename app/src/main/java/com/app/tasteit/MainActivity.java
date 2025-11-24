@@ -78,20 +78,33 @@ public class MainActivity extends AppCompatActivity {
         ImageView ivAccount = findViewById(R.id.ivAccount);
         ivAccount.setOnClickListener(v -> {
             PopupMenu menu = new PopupMenu(this, ivAccount);
-            if (LoginActivity.currentUser == null) menu.getMenu().add("Login");
-            else menu.getMenu().add("Logout");
+
+            if (LoginActivity.currentUser == null) {
+                menu.getMenu().add("Login");
+            } else {
+                menu.getMenu().add("Mi perfil");
+                menu.getMenu().add("Logout");
+            }
 
             menu.setOnMenuItemClickListener(item -> {
-                if (item.getTitle().equals("Login")) {
+                String title = item.getTitle().toString();
+
+                if (title.equals("Login")) {
                     startActivity(new Intent(this, LoginActivity.class));
-                } else {
+                }
+                else if (title.equals("Mi perfil")) {
+                    startActivity(new Intent(this, ProfileActivity.class));
+                }
+                else if (title.equals("Logout")) {
                     Toast.makeText(this, getString(R.string.session_closed), Toast.LENGTH_SHORT).show();
                     LoginActivity.currentUser = null;
                     startActivity(new Intent(this, LoginActivity.class));
                     finish();
                 }
+
                 return true;
             });
+
             menu.show();
         });
 
@@ -110,13 +123,13 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(new Intent(this, CommunityActivity.class))
         );
 
-        // HERO: cargar imagen de fondo con Glide
+        // HERO
         ImageView heroImage = findViewById(R.id.heroImage);
         Glide.with(this)
                 .load("https://images.pexels.com/photos/6287521/pexels-photo-6287521.jpeg")
                 .into(heroImage);
 
-        // CARRUSEL DE DESTACADOS
+        // DESTACADOS
         rvHighlights = findViewById(R.id.rvHighlights);
         rvHighlights.setLayoutManager(
                 new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)

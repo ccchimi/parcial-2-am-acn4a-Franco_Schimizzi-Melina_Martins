@@ -1,67 +1,87 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="@dimen/padding_l">
+    android:gravity="center"
+    android:background="@color/screenBackground"
+    android:padding="@dimen/padding_m">
 
-    <!-- Título -->
-    <TextView
-        android:id="@+id/loginTitle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/login_title"
-        android:textSize="@dimen/text_header"
-        android:textStyle="bold"
-        android:layout_gravity="center_horizontal"
-        android:paddingBottom="@dimen/margin_l"/>
-
-    <!-- Campo Usuario -->
-    <EditText
-        android:id="@+id/etUsername"
+    <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="@string/login_username"
-        android:padding="@dimen/padding_m"/>
+        android:layout_margin="@dimen/margin_m"
+        app:cardCornerRadius="24dp"
+        app:cardElevation="8dp">
 
-    <!-- Campo Contraseña -->
-    <EditText
-        android:id="@+id/etPassword"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="@string/login_password"
-        android:padding="@dimen/padding_m"
-        android:layout_marginTop="@dimen/margin_s"
-        android:inputType="textPassword"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="@dimen/padding_l">
 
-    <!-- Botón Login -->
-    <Button
-        android:id="@+id/btnLogin"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/button_height"
-        android:text="@string/login_button"
-        android:layout_marginTop="@dimen/margin_m"
-        android:backgroundTint="@color/primary"
-        android:textColor="@android:color/white"/>
+            <!-- Título -->
+            <TextView
+                android:id="@+id/loginTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/login_title"
+                android:textSize="@dimen/text_header"
+                android:textStyle="bold"
+                android:layout_gravity="center_horizontal"
+                android:paddingBottom="@dimen/margin_l"/>
 
-    <!-- Botón Crear Usuario -->
-    <Button
-        android:id="@+id/btnCreateUser"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/button_height"
-        android:text="@string/login_create_user"
-        android:layout_marginTop="@dimen/margin_s"
-        android:backgroundTint="@color/secondary"
-        android:textColor="@android:color/white"/>
+            <!-- Usuario -->
+            <EditText
+                android:id="@+id/etUsername"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/login_username"
+                android:padding="@dimen/padding_m"/>
 
-    <!-- Olvidaste contraseña -->
-    <TextView
-        android:id="@+id/tvForgot"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/login_forgot_password"
-        android:textColor="@color/primary"
-        android:layout_marginTop="@dimen/margin_m"
-        android:layout_gravity="center_horizontal"/>
+            <!-- Contraseña -->
+            <EditText
+                android:id="@+id/etPassword"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/login_password"
+                android:padding="@dimen/padding_m"
+                android:layout_marginTop="@dimen/margin_s"
+                android:inputType="textPassword"/>
+
+            <!-- Botón Login -->
+            <Button
+                android:id="@+id/btnLogin"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/button_height"
+                android:text="@string/login_button"
+                android:layout_marginTop="@dimen/margin_m"
+                android:backgroundTint="@color/primary"
+                android:textColor="@android:color/white"/>
+
+            <!-- Botón Crear Usuario -->
+            <Button
+                android:id="@+id/btnCreateUser"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/button_height"
+                android:text="@string/login_create_user"
+                android:layout_marginTop="@dimen/margin_s"
+                android:backgroundTint="@color/primaryPastel"
+                android:textColor="@color/textPrimary"/>
+
+            <!-- Olvidaste contraseña -->
+            <TextView
+                android:id="@+id/tvForgot"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/login_forgot_password"
+                android:textColor="@color/primary"
+                android:layout_marginTop="@dimen/margin_m"
+                android:layout_gravity="center_horizontal"/>
+
+        </LinearLayout>
+
+    </com.google.android.material.card.MaterialCardView>
 
 </LinearLayout>

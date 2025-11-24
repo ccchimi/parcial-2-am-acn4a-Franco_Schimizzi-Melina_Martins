@@ -25,6 +25,11 @@
             </intent-filter>
         </activity>
 
+        <!-- PERFIL -->
+        <activity
+            android:name=".ProfileActivity"
+            android:exported="false" />
+
         <!-- HOME -->
         <activity
             android:name=".MainActivity"
