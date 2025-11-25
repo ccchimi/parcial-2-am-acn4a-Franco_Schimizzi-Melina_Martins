@@ -65,7 +65,7 @@ public class LoginActivity extends AppCompatActivity {
             return;
         }
 
-        // 1️⃣ Buscar email REAL de ese username
+        // 1) Buscar email REAL de ese username
         db.collection("users")
                 .document(username)   // username = ID único en Firestore
                 .get()
@@ -83,11 +83,11 @@ public class LoginActivity extends AppCompatActivity {
                         return;
                     }
 
-                    // 2️⃣ Autenticar con FirebaseAuth usando email real
+                    // 2) Autenticar con FirebaseAuth usando email real
                     auth.signInWithEmailAndPassword(email, pass)
                             .addOnSuccessListener(authResult -> {
 
-                                // 3️⃣ Guardamos currentUser como username, NO como email
+                                // 3) Guardamos currentUser como username, NO como email
                                 currentUser = username;
 
                                 Toast.makeText(this, "Bienvenido " + username, Toast.LENGTH_SHORT).show();
