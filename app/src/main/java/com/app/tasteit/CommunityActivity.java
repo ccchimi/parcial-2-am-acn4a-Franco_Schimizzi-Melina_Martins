@@ -8,9 +8,7 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.widget.ImageView;
@@ -18,10 +16,10 @@ import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,18 +32,20 @@ public class CommunityActivity extends AppCompatActivity {
     RecyclerView rvCommunity;
     FloatingActionButton fabAddRecipe;
 
-    private SharedPreferences communityPrefs;
-    private Gson gson = new Gson();
+    private FirebaseFirestore db;
+    private FirebaseAuth auth;
+
     private List<CommunityRecipe> communityRecipes = new ArrayList<>();
     private CommunityRecipeAdapter adapter;
-
-    private static final String PREFS_NAME = "CommunityPrefs";
-    private static final String COMMUNITY_KEY = "community_recipes";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_community);
+
+        // Firebase
+        db = FirebaseFirestore.getInstance();
+        auth = FirebaseAuth.getInstance();
 
         // Toolbar
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -85,106 +85,54 @@ public class CommunityActivity extends AppCompatActivity {
             return true;
         });
 
-        communityPrefs = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
-
+        // Recycler
         rvCommunity = findViewById(R.id.rvCommunity);
         rvCommunity.setLayoutManager(new LinearLayoutManager(this));
 
-        loadCommunityRecipes();
         adapter = new CommunityRecipeAdapter(this, communityRecipes);
         rvCommunity.setAdapter(adapter);
 
+        // FAB: crear nueva receta
         fabAddRecipe = findViewById(R.id.fabAddRecipe);
-        fabAddRecipe.setOnClickListener(v -> showCreateRecipeDialog());
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        // Por si se editaron recetas en el detalle
-        loadCommunityRecipes();
-        if (adapter != null) {
-            adapter.setRecipes(communityRecipes);
-        }
-    }
-
-    private void loadCommunityRecipes() {
-        String json = communityPrefs.getString(COMMUNITY_KEY, null);
-        Type type = new TypeToken<List<CommunityRecipe>>(){}.getType();
-
-        if (json == null) {
-            communityRecipes = getDefaultCommunityRecipes();
-            saveCommunityRecipes();
-        } else {
-            communityRecipes = gson.fromJson(json, type);
-            if (communityRecipes == null) {
-                communityRecipes = new ArrayList<>();
+        fabAddRecipe.setOnClickListener(v -> {
+            if (auth.getCurrentUser() == null) {
+                Toast.makeText(this, getString(R.string.must_login_favorites), Toast.LENGTH_SHORT).show();
+                startActivity(new Intent(this, LoginActivity.class));
+                return;
             }
-        }
+
+            Intent i = new Intent(this, RecipeFormActivity.class);
+            startActivity(i);
+        });
+
+        // Escuchar recetas de la comunidad
+        listenCommunityRecipes();
     }
 
-    private void saveCommunityRecipes() {
-        communityPrefs.edit()
-                .putString(COMMUNITY_KEY, gson.toJson(communityRecipes))
-                .apply();
-    }
+    private void listenCommunityRecipes() {
+        db.collection("comunidad")
+                .orderBy("createdAt", Query.Direction.DESCENDING)
+                .addSnapshotListener((value, error) -> {
+                    if (error != null) {
+                        Toast.makeText(this,
+                                "Error al cargar comunidad: " + error.getMessage(),
+                                Toast.LENGTH_SHORT).show();
+                        return;
+                    }
 
-    private List<CommunityRecipe> getDefaultCommunityRecipes() {
-        List<CommunityRecipe> list = new ArrayList<>();
+                    if (value == null) return;
 
-        list.add(new CommunityRecipe(
-                "Tostadas francesas rellenas",
-                "Pan brioche relleno con dulce de leche y bañado en huevo, leche y canela. Ideal para un brunch potente.",
-                "https://gourmet.iprospect.cl/wp-content/uploads/2014/05/tostadas-francesas.jpg",
-                "20 min",
-                "Prueba 1"
-        ));
+                    communityRecipes.clear();
+                    value.getDocuments().forEach(doc -> {
+                        CommunityRecipe r = doc.toObject(CommunityRecipe.class);
+                        if (r != null) {
+                            r.setId(doc.getId());
+                            communityRecipes.add(r);
+                        }
+                    });
 
-        list.add(new CommunityRecipe(
-                "Bowl veggie de garbanzos",
-                "Garbanzos especiados al horno, mix de hojas verdes, palta, tomate cherry y aderezo de tahini.",
-                "https://d36fw6y2wq3bat.cloudfront.net/recipes/bowl-de-garbanzos-y-quinua/900/bowl-de-garbanzos-y-quinua_version_1652869666.jpg",
-                "25 min",
-                "Prueba 2"
-        ));
-
-        // Editable
-        list.add(new CommunityRecipe(
-                "Pasta cremosa de una sola olla",
-                "Fideos, caldo, crema y parmesano: todo en una sola olla, sin colar. Súper rápida para los días apurados.",
-                "https://i.redd.it/ue8ohpgxcwac1.jpeg",
-                "30 min",
-                "admin"
-        ));
-
-        return list;
-    }
-
-    private void showCreateRecipeDialog() {
-        String currentUser = LoginActivity.currentUser;
-        if (currentUser == null) {
-            Toast.makeText(this, getString(R.string.must_login_favorites), Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        CreateCommunityRecipeDialog dialog = new CreateCommunityRecipeDialog(
-                this,
-                (title, description, imageUrl, time) -> {
-
-                    CommunityRecipe recipe = new CommunityRecipe(
-                            title,
-                            description,
-                            imageUrl,
-                            time,
-                            currentUser
-                    );
-                    communityRecipes.add(0, recipe);
-                    saveCommunityRecipes();
                     adapter.setRecipes(communityRecipes);
-                    Toast.makeText(this, "Receta publicada en la comunidad", Toast.LENGTH_SHORT).show();
-                }
-        );
-        dialog.show();
+                });
     }
 
     @Override

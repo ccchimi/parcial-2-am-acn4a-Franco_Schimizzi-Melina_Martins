@@ -18,14 +18,17 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 public class LoginActivity extends AppCompatActivity {
 
-    private EditText etIdentifier, etPassword;   // identifier = username o email
+    private EditText etIdentifier, etPassword;
     private Button btnLogin, btnCreateUser;
     private TextView tvForgot;
 
     private FirebaseAuth auth;
     private FirebaseFirestore db;
 
-    public static String currentUser = null;     // guardamos el email actual
+    public static String currentUser = null;
+
+    public static String currentUid = null;
+    public static String currentUsername = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,7 +44,7 @@ public class LoginActivity extends AppCompatActivity {
         btnCreateUser = findViewById(R.id.btnCreateUser);
         tvForgot     = findViewById(R.id.tvForgot);
 
-        // Si ya está logueado, lo mando directo al Home
+        // Si ya esta logueado, lo mando directo al Home
         if (auth.getCurrentUser() != null) {
             currentUser = auth.getCurrentUser().getEmail();
             startActivity(new Intent(this, MainActivity.class));

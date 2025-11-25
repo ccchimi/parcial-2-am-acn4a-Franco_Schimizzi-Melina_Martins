@@ -9,7 +9,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.EditText;
@@ -19,28 +18,22 @@ import android.widget.Toast;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 
-import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class ProfileActivity extends AppCompatActivity {
 
     private EditText etFirstName, etLastName, etEmail, etUsername, etPassword;
     private RecyclerView rvMyRecipes;
 
-    private SharedPreferences userPrefs;
-    private SharedPreferences communityPrefs;
-    private Gson gson = new Gson();
-
     private List<CommunityRecipe> myCommunityRecipes = new ArrayList<>();
     private CommunityRecipeAdapter myAdapter;
-
-    private static final String USERS_PREFS = "UsersPrefs";
-    private static final String COMMUNITY_PREFS = "CommunityPrefs";
-    private static final String COMMUNITY_KEY = "community_recipes";
 
     // Drawer
     private DrawerLayout drawerLayout;
@@ -49,24 +42,30 @@ public class ProfileActivity extends AppCompatActivity {
 
     // Firebase
     private FirebaseAuth auth;
+    private FirebaseUser firebaseUser;
+    private FirebaseFirestore db;
+
     private String currentEmail = "";
+    private String userDocId = null; // id del doc en "usuarios"
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
 
-        // ---- Firebase: usuario actual ----
+        // ---- Firebase ----
         auth = FirebaseAuth.getInstance();
-        FirebaseUser user = auth.getCurrentUser();
-        if (user == null) {
-            // Si por alguna razón no hay usuario, lo mando al Login
+        firebaseUser = auth.getCurrentUser();
+        db = FirebaseFirestore.getInstance();
+
+        if (firebaseUser == null) {
             startActivity(new Intent(this, LoginActivity.class));
             finish();
             return;
         }
-        if (user.getEmail() != null) {
-            currentEmail = user.getEmail();
+
+        if (firebaseUser.getEmail() != null) {
+            currentEmail = firebaseUser.getEmail();
         }
 
         // ---- Toolbar + Drawer ----
@@ -100,7 +99,6 @@ public class ProfileActivity extends AppCompatActivity {
                 intent.putExtra("showFavorites", true);
                 startActivity(intent);
             } else if (id == R.id.nav_logout) {
-                // Usamos el logout centralizado con Firebase
                 LoginActivity.logout(this);
             }
 
@@ -108,46 +106,40 @@ public class ProfileActivity extends AppCompatActivity {
             return true;
         });
 
-        // ---- Menú de cuenta (popup con Mi perfil / Logout) ----
+        // ---- Menu de cuenta (popup) ----
         ImageView ivAccount = findViewById(R.id.ivAccount);
         AccountMenuHelper.setup(this, ivAccount);
 
-        // ---- Lógica de perfil ----
-        userPrefs = getSharedPreferences(USERS_PREFS, MODE_PRIVATE);
-        communityPrefs = getSharedPreferences(COMMUNITY_PREFS, MODE_PRIVATE);
-
+        // ---- Views de perfil ----
         etFirstName = findViewById(R.id.etProfileFirstName);
-        etLastName = findViewById(R.id.etProfileLastName);
-        etEmail = findViewById(R.id.etProfileEmail);
-        etUsername = findViewById(R.id.etProfileUsername);
-        etPassword = findViewById(R.id.etProfilePassword);
+        etLastName  = findViewById(R.id.etProfileLastName);
+        etEmail     = findViewById(R.id.etProfileEmail);
+        etUsername  = findViewById(R.id.etProfileUsername);
+        etPassword  = findViewById(R.id.etProfilePassword);
+
+        // username NO editable
+        etUsername.setEnabled(false);
 
         rvMyRecipes = findViewById(R.id.rvMyCommunityRecipes);
         rvMyRecipes.setLayoutManager(new LinearLayoutManager(this));
 
-        Button btnSave = findViewById(R.id.btnSaveProfile);
+        Button btnSave   = findViewById(R.id.btnSaveProfile);
         Button btnLogout = findViewById(R.id.btnLogout);
 
-        // Mostrar email como dato base del usuario
         etEmail.setText(currentEmail);
 
-        // Cargar datos guardados de perfil (asociados al email)
-        loadProfileData(currentEmail);
-
-        // Cargar recetas propias de la comunidad (autor = email actual)
-        loadMyCommunityRecipes(currentEmail);
-
+        // Adapter sin listener extra (usa el click interno que ya abre el detalle)
         myAdapter = new CommunityRecipeAdapter(this, myCommunityRecipes);
         rvMyRecipes.setAdapter(myAdapter);
 
-        btnSave.setOnClickListener(v -> {
-            saveProfileData(currentEmail);
-            Toast.makeText(this, "Perfil actualizado", Toast.LENGTH_SHORT).show();
-        });
+        // Cargar datos del usuario desde Firestore
+        loadUserProfileFromFirestore();
 
-        btnLogout.setOnClickListener(v -> {
-            LoginActivity.logout(this);
-        });
+        // Cargar recetas del usuario
+        listenMyCommunityRecipes();
+
+        btnSave.setOnClickListener(v -> saveProfile());
+        btnLogout.setOnClickListener(v -> LoginActivity.logout(this));
     }
 
     @Override
@@ -156,54 +148,142 @@ public class ProfileActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private void loadProfileData(String emailKey) {
-        String firstName = userPrefs.getString("profile_firstName_" + emailKey, "");
-        String lastName  = userPrefs.getString("profile_lastName_" + emailKey, "");
-        String email     = userPrefs.getString("profile_email_" + emailKey, currentEmail);
-        String username  = userPrefs.getString("profile_username_" + emailKey, "");
-        String password  = userPrefs.getString("profile_password_" + emailKey, "");
+    private void loadUserProfileFromFirestore() {
+        // Buscamos el doc del usuario por email
+        db.collection("usuarios")
+                .whereEqualTo("email", currentEmail)
+                .limit(1)
+                .get()
+                .addOnSuccessListener(snapshot -> {
+                    if (!snapshot.isEmpty()) {
+                        DocumentSnapshot doc = snapshot.getDocuments().get(0);
+                        userDocId = doc.getId();
 
-        etFirstName.setText(firstName);
-        etLastName.setText(lastName);
-        etEmail.setText(email);
-        etUsername.setText(username);
-        etPassword.setText(password);
+                        String firstName = doc.getString("firstName");
+                        String lastName  = doc.getString("lastName");
+                        String email     = doc.getString("email");
+                        String username  = doc.getString("username");
+
+                        etFirstName.setText(firstName != null ? firstName : "");
+                        etLastName.setText(lastName != null ? lastName : "");
+                        etEmail.setText(email != null ? email : currentEmail);
+
+                        // username fijo
+                        if (username != null && !username.isEmpty()) {
+                            etUsername.setText(username);
+                        } else if (LoginActivity.currentUsername != null) {
+                            etUsername.setText(LoginActivity.currentUsername);
+                        }
+                    } else {
+                        // Si no hay doc, al menos mostramos lo básico
+                        etEmail.setText(currentEmail);
+                        if (LoginActivity.currentUsername != null) {
+                            etUsername.setText(LoginActivity.currentUsername);
+                        }
+                    }
+                })
+                .addOnFailureListener(e ->
+                        Toast.makeText(this,
+                                "Error al cargar perfil: " + e.getMessage(),
+                                Toast.LENGTH_SHORT).show()
+                );
     }
 
-    private void saveProfileData(String emailKey) {
-        userPrefs.edit()
-                .putString("profile_firstName_" + emailKey,
-                        etFirstName.getText().toString().trim())
-                .putString("profile_lastName_" + emailKey,
-                        etLastName.getText().toString().trim())
-                .putString("profile_email_" + emailKey,
-                        etEmail.getText().toString().trim())
-                .putString("profile_username_" + emailKey,
-                        etUsername.getText().toString().trim())
-                .putString("profile_password_" + emailKey,
-                        etPassword.getText().toString().trim())
-                .apply();
+    private void listenMyCommunityRecipes() {
+        String uid = firebaseUser.getUid();
+
+        db.collection("usuarios")
+                .document(uid)
+                .collection("recetas")
+                .orderBy("createdAt", Query.Direction.DESCENDING)
+                .addSnapshotListener((value, error) -> {
+                    if (error != null) {
+                        Toast.makeText(this,
+                                "Error al cargar tus recetas: " + error.getMessage(),
+                                Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+
+                    if (value == null) return;
+
+                    myCommunityRecipes.clear();
+
+                    value.getDocuments().forEach(doc -> {
+                        CommunityRecipe r = doc.toObject(CommunityRecipe.class);
+                        if (r != null) {
+                            r.setId(doc.getId());
+                            myCommunityRecipes.add(r);
+                        }
+                    });
+
+                    myAdapter.setRecipes(myCommunityRecipes);
+                });
     }
 
-    private void loadMyCommunityRecipes(String emailKey) {
-        String json = communityPrefs.getString(COMMUNITY_KEY, null);
-        if (json == null) {
-            myCommunityRecipes = new ArrayList<>();
+    private void saveProfile() {
+        String newFirstName = etFirstName.getText().toString().trim();
+        String newLastName  = etLastName.getText().toString().trim();
+        String newEmail     = etEmail.getText().toString().trim();
+        String newPassword  = etPassword.getText().toString().trim();
+
+        if (newEmail.isEmpty()) {
+            etEmail.setError("El email no puede estar vacío");
             return;
         }
 
-        Type type = new TypeToken<List<CommunityRecipe>>(){}.getType();
-        List<CommunityRecipe> all = gson.fromJson(json, type);
-        if (all == null) {
-            myCommunityRecipes = new ArrayList<>();
-            return;
+        FirebaseUser user = firebaseUser;
+
+        // Actualizar email en Auth si cambio
+        if (!newEmail.equals(currentEmail)) {
+            user.updateEmail(newEmail)
+                    .addOnSuccessListener(v -> {
+                        currentEmail = newEmail;
+                        Toast.makeText(this, "Email actualizado en Auth", Toast.LENGTH_SHORT).show();
+                    })
+                    .addOnFailureListener(e ->
+                            Toast.makeText(this,
+                                    "Error al actualizar email: " + e.getMessage(),
+                                    Toast.LENGTH_SHORT).show()
+                    );
         }
 
-        myCommunityRecipes = new ArrayList<>();
-        for (CommunityRecipe r : all) {
-            if (r.getAuthor() != null && r.getAuthor().equals(emailKey)) {
-                myCommunityRecipes.add(r);
-            }
+        // Actualizar contraseña si se ingreso algo
+        if (!newPassword.isEmpty()) {
+            user.updatePassword(newPassword)
+                    .addOnSuccessListener(v ->
+                            Toast.makeText(this,
+                                    "Contraseña actualizada",
+                                    Toast.LENGTH_SHORT).show()
+                    )
+                    .addOnFailureListener(e ->
+                            Toast.makeText(this,
+                                    "Error al actualizar contraseña: " + e.getMessage(),
+                                    Toast.LENGTH_SHORT).show()
+                    );
+        }
+
+        // Actualizar datos en Firestore
+        if (userDocId != null) {
+            Map<String, Object> updates = new HashMap<>();
+            updates.put("firstName", newFirstName);
+            updates.put("lastName", newLastName);
+            updates.put("email", newEmail);
+
+            db.collection("usuarios")
+                    .document(userDocId)
+                    .update(updates)
+                    .addOnSuccessListener(v ->
+                            Toast.makeText(this, "Perfil actualizado", Toast.LENGTH_SHORT).show()
+                    )
+                    .addOnFailureListener(e ->
+                            Toast.makeText(this,
+                                    "Error al actualizar perfil: " + e.getMessage(),
+                                    Toast.LENGTH_SHORT).show()
+                    );
+        } else {
+            Toast.makeText(this,
+                    "No se encontró documento de usuario en Firestore",
+                    Toast.LENGTH_SHORT).show();
         }
     }
 }

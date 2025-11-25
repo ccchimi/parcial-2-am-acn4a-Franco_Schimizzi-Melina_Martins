@@ -13,6 +13,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -26,21 +28,19 @@ public class CommunityRecipeDetailActivity extends AppCompatActivity {
     private TextView detailTitle, detailAuthor, detailTime, detailDescription;
     private Button btnFav, btnDownload, btnEdit, btnBack;
 
-    private SharedPreferences communityPrefs;
-    private Gson gson = new Gson();
-    private List<CommunityRecipe> communityRecipes = new ArrayList<>();
-    private int recipeIndex = -1;
     private CommunityRecipe recipe;
 
-    private static final String PREFS_NAME = "CommunityPrefs";
-    private static final String COMMUNITY_KEY = "community_recipes";
+    private FirebaseFirestore db;
+    private FirebaseAuth auth;
+
+    private Gson gson = new Gson();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_community_recipe_detail);
 
-        // Toolbar + menú de cuenta
+        // Toolbar + menu de cuenta
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         ImageView ivAccount = findViewById(R.id.ivAccount);
@@ -56,61 +56,76 @@ public class CommunityRecipeDetailActivity extends AppCompatActivity {
         btnEdit = findViewById(R.id.btnEdit);
         btnBack = findViewById(R.id.btnBack);
 
-        communityPrefs = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
-        loadCommunityRecipes();
+        db = FirebaseFirestore.getInstance();
+        auth = FirebaseAuth.getInstance();
 
-        String title = getIntent().getStringExtra("recipe_title");
-        String author = getIntent().getStringExtra("recipe_author");
-
-        if (title == null || author == null) {
+        String recipeId = getIntent().getStringExtra("recipe_id");
+        if (recipeId == null || recipeId.isEmpty()) {
             finish();
             return;
         }
 
-        recipeIndex = -1;
-        for (int i = 0; i < communityRecipes.size(); i++) {
-            CommunityRecipe r = communityRecipes.get(i);
-            if (title.equals(r.getTitle()) && author.equals(r.getAuthor())) {
-                recipeIndex = i;
-                recipe = r;
-                break;
-            }
-        }
-
-        if (recipeIndex == -1) {
-            // No se encontro la receta en la lista guardada
-            finish();
-            return;
-        }
-
-        bindData();
+        loadRecipeFromFirestore(recipeId);
 
         btnBack.setOnClickListener(v -> finish());
 
-        btnFav.setOnClickListener(v -> addToFavoritesFromCommunity(recipe));
+        btnFav.setOnClickListener(v -> {
+            if (recipe != null) {
+                addToFavoritesFromCommunity(recipe);
+            }
+        });
 
-        btnDownload.setOnClickListener(v -> downloadRecipe(recipe));
+        btnDownload.setOnClickListener(v -> {
+            if (recipe != null) {
+                downloadRecipe(recipe);
+            }
+        });
 
-        String currentUser = LoginActivity.currentUser;
-        if (currentUser == null || !currentUser.equals(recipe.getAuthor())) {
-            btnEdit.setEnabled(false);
-            btnEdit.setAlpha(0.4f);
-        } else {
-            btnEdit.setOnClickListener(v -> {
-                EditCommunityRecipeDialog dialog = new EditCommunityRecipeDialog(
-                        this,
-                        recipe,
-                        updated -> {
-                            communityRecipes.set(recipeIndex, updated);
-                            saveCommunityRecipes();
-                            recipe = updated;
-                            bindData();
-                            Toast.makeText(this, "Receta actualizada", Toast.LENGTH_SHORT).show();
-                        }
-                );
-                dialog.show();
-            });
-        }
+        btnEdit.setOnClickListener(v -> {
+            if (recipe == null) return;
+            if (auth.getCurrentUser() == null) return;
+
+            String uid = auth.getCurrentUser().getUid();
+            if (recipe.getAuthorId() != null && recipe.getAuthorId().equals(uid)) {
+                Intent i = new Intent(this, RecipeFormActivity.class);
+                i.putExtra("recipeId", recipe.getId());
+                startActivity(i);
+            } else {
+                Toast.makeText(this,
+                        "No podés editar esta receta (no sos el dueño).",
+                        Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void loadRecipeFromFirestore(String recipeId) {
+        db.collection("comunidad")
+                .document(recipeId)
+                .get()
+                .addOnSuccessListener(doc -> {
+                    if (!doc.exists()) {
+                        Toast.makeText(this, "La receta no existe", Toast.LENGTH_SHORT).show();
+                        finish();
+                        return;
+                    }
+
+                    recipe = doc.toObject(CommunityRecipe.class);
+                    if (recipe == null) {
+                        Toast.makeText(this, "Error al leer la receta", Toast.LENGTH_SHORT).show();
+                        finish();
+                        return;
+                    }
+                    recipe.setId(doc.getId());
+
+                    bindData();
+                    updateEditButtonState();
+                })
+                .addOnFailureListener(e -> {
+                    Toast.makeText(this,
+                            "Error al cargar la receta: " + e.getMessage(),
+                            Toast.LENGTH_SHORT).show();
+                    finish();
+                });
     }
 
     private void bindData() {
@@ -126,18 +141,24 @@ public class CommunityRecipeDetailActivity extends AppCompatActivity {
                 .into(detailImage);
     }
 
-    private void loadCommunityRecipes() {
-        String json = communityPrefs.getString(COMMUNITY_KEY, null);
-        Type type = new TypeToken<List<CommunityRecipe>>(){}.getType();
-        communityRecipes = json == null ? new ArrayList<>() : gson.fromJson(json, type);
-        if (communityRecipes == null) communityRecipes = new ArrayList<>();
+    private void updateEditButtonState() {
+        if (auth.getCurrentUser() == null || recipe == null) {
+            btnEdit.setEnabled(false);
+            btnEdit.setAlpha(0.4f);
+            return;
+        }
+
+        String uid = auth.getCurrentUser().getUid();
+        if (recipe.getAuthorId() != null && recipe.getAuthorId().equals(uid)) {
+            btnEdit.setEnabled(true);
+            btnEdit.setAlpha(1f);
+        } else {
+            btnEdit.setEnabled(false);
+            btnEdit.setAlpha(0.4f);
+        }
     }
 
-    private void saveCommunityRecipes() {
-        communityPrefs.edit()
-                .putString(COMMUNITY_KEY, gson.toJson(communityRecipes))
-                .apply();
-    }
+    // ----- Favoritos -----
 
     private void addToFavoritesFromCommunity(CommunityRecipe cRecipe) {
         String currentUser = LoginActivity.currentUser;
@@ -150,10 +171,11 @@ public class CommunityRecipeDetailActivity extends AppCompatActivity {
         String key = "favorites_" + currentUser;
         String json = sharedPrefs.getString(key, null);
         Type type = new TypeToken<List<Recipe>>(){}.getType();
-        List<Recipe> favorites = json == null ? new ArrayList<>() : new Gson().fromJson(json, type);
+        List<Recipe> favorites = json == null ? new ArrayList<>() : gson.fromJson(json, type);
 
         for (Recipe r : favorites) {
-            if (r.getTitle().equals(cRecipe.getTitle())) {
+            if (r.getTitle().equals(cRecipe.getTitle())
+                    && "Comunidad".equals(r.getCategory())) {
                 Toast.makeText(this, getString(R.string.already_favorite), Toast.LENGTH_SHORT).show();
                 return;
             }
@@ -171,7 +193,7 @@ public class CommunityRecipeDetailActivity extends AppCompatActivity {
         );
 
         favorites.add(fav);
-        sharedPrefs.edit().putString(key, new Gson().toJson(favorites)).apply();
+        sharedPrefs.edit().putString(key, gson.toJson(favorites)).apply();
         Toast.makeText(this, getString(R.string.added_favorite), Toast.LENGTH_SHORT).show();
     }
 

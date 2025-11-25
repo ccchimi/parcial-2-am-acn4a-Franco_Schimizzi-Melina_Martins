@@ -59,14 +59,14 @@ public class CommunityRecipeAdapter extends RecyclerView.Adapter<CommunityRecipe
                 .error(R.drawable.tastel)
                 .into(holder.image);
 
-        // Estado inicial del favorito segun si está en SharedPreferences
+        // Estado inicial del favorito segun si esta en SharedPreferences
         boolean isFav = isInFavorites(recipe);
         holder.setFavorite(isFav);
 
+        // Ir al detalle – ahora pasamos el ID de Firestore
         holder.itemView.setOnClickListener(v -> {
             Intent intent = new Intent(context, CommunityRecipeDetailActivity.class);
-            intent.putExtra("recipe_title", recipe.getTitle());
-            intent.putExtra("recipe_author", recipe.getAuthor());
+            intent.putExtra("recipe_id", recipe.getId());
             context.startActivity(intent);
         });
 
@@ -108,7 +108,6 @@ public class CommunityRecipeAdapter extends RecyclerView.Adapter<CommunityRecipe
 
         void setFavorite(boolean favorite) {
             isFavorite = favorite;
-            // Usamos los mismos drawables del layout original pero cambiando según estado
             btnFav.setImageResource(
                     favorite ? android.R.drawable.btn_star_big_on : android.R.drawable.btn_star_big_off
             );
