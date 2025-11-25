@@ -107,7 +107,7 @@
                 </FrameLayout>
             </com.google.android.material.card.MaterialCardView>
 
-            <!-- ACCESOS RÁPIDOS -->
+            <!-- ACCESOS RAPIDOS -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -153,7 +153,7 @@
                     android:textColor="@android:color/white"/>
             </LinearLayout>
 
-            <!-- EXPLORÁ POR TIPO -->
+            <!-- EXPLORA POR TIPO -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -252,7 +252,7 @@
                 android:overScrollMode="never"
                 android:nestedScrollingEnabled="false"/>
 
-            <!-- TIPS RÁPIDOS (CARD) -->
+            <!-- TIPS RAPIDOS (CARD) -->
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
