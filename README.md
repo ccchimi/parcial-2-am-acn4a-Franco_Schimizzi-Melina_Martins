@@ -132,6 +132,7 @@ Los usuarios pueden:
 - Android Studio (Java)
 - XML para layout
 - Material Design Components
+- jsDelivr CDN
 
 ### **Backend**
 - Firebase Authentication  
@@ -161,12 +162,9 @@ app/
 │ ├─ CommunityRecipeDetailActivity.java
 │ ├─ RecipeFormActivity.java
 │ ├─ RecipeDetailActivity.java
-│ ├─ models/
-│ │ └─ CommunityRecipe.java
-│ ├─ adapters/
-│ │ ├─ CommunityRecipeAdapter.java
-│ │ └─ RecipeAdapter.java
-│ └─ utils/
+│ ├─ CommunityRecipe.java
+│ ├─ CommunityRecipeAdapter.java
+│ ├─ RecipeAdapter.java
 │ └─ AccountMenuHelper.java
 ├─ res/
 │ ├─ layout/ (XML)
