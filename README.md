@@ -316,6 +316,19 @@ El proyecto cumple y supera todas las consignas del Parcial I y II, logrando una
 
 ---
 
+# Links
+
+LINK GITHUB:
+
+https://github.com/ccchimi/parcial-2-am-acn4a-Schimizzi-Martins
+https://github.com/ccchimi/parcial-2-am-acn4a-Schimizzi-Martins.git
+
+sergiomedinaio y IJSagnella están invitados para colaboradores por las dudas
+
+LINK FIGMA:
+
+https://www.figma.com/design/FJAG6taGZRovizosxl6VxG/Mockups?node-id=0-1&t=CxByK2e9DBQnFEdu-1
+
 # Autores
 
 - **Franco Martín Schimizzi**  
