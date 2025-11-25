@@ -5,7 +5,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class RetrofitClient {
 
-    // Usamos jsDelivr para evitar 429 de GitHub
+    // Usamos jsDelivr de cdn para evitar un error reiterativo "429" de GitHub
     private static final String BASE_URL =
             "https://cdn.jsdelivr.net/gh/ccchimi/parcial-2-am-acn4a-Schimizzi-Martins@main/";
 
