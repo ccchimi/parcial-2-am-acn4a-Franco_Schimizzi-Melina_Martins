@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="@dimen/padding_m"
+    android:background="@color/screenBackground">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center_horizontal">
+
+        <EditText
+            android:id="@+id/etTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/margin_m"
+            android:hint="Título"
+            android:textSize="@dimen/text_medium"
+            android:textColor="@color/textPrimary"
+            android:inputType="textCapSentences" />
+
+        <EditText
+            android:id="@+id/etDescription"
+            android:layout_width="match_parent"
+            android:layout_height="150dp"
+            android:layout_marginBottom="@dimen/margin_m"
+            android:gravity="top"
+            android:hint="Descripción"
+            android:textSize="@dimen/text_normal"
+            android:textColor="@color/textPrimary"
+            android:inputType="textMultiLine" />
+
+        <EditText
+            android:id="@+id/etImageUrl"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/margin_m"
+            android:hint="URL de imagen"
+            android:textSize="@dimen/text_normal"
+            android:textColor="@color/textPrimary"
+            android:inputType="textUri" />
+
+        <EditText
+            android:id="@+id/etCookingTime"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/margin_l"
+            android:hint="Tiempo de preparación (Ej: 20 min)"
+            android:textSize="@dimen/text_normal"
+            android:textColor="@color/textPrimary"
+            android:inputType="text" />
+
+        <Button
+            android:id="@+id/btnSaveRecipe"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/button_height"
+            android:text="Guardar receta"
+            android:textSize="@dimen/text_medium"
+            android:textColor="@color/white"
+            android:backgroundTint="@color/primary" />
+    </LinearLayout>
+</ScrollView>
