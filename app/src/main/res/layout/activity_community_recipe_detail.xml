@@ -33,12 +33,13 @@
             android:layout_marginEnd="@dimen/margin_s" />
     </androidx.appcompat.widget.Toolbar>
 
-    <!-- Scroll -->
+    <!-- Contenido scrollable -->
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:padding="@dimen/padding_m">
+        android:padding="@dimen/padding_m"
+        tools:context=".CommunityRecipeDetailActivity">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -89,7 +90,7 @@
                 android:textColor="@color/textPrimary"
                 android:layout_marginTop="@dimen/margin_m" />
 
-            <!-- BOTONES -->
+            <!-- FILA 1: Favorito / Descargar -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -99,36 +100,54 @@
 
                 <Button
                     android:id="@+id/btnFav"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/button_height"
+                    android:layout_weight="1"
+                    android:layout_marginEnd="@dimen/margin_s"
                     android:text="🔥 Favorito"
+                    android:textSize="@dimen/text_normal"
                     android:backgroundTint="@color/primary"
-                    android:textColor="@color/white"
-                    android:layout_marginEnd="@dimen/margin_s" />
+                    android:textColor="@color/white" />
 
                 <Button
                     android:id="@+id/btnDownload"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/button_height"
+                    android:layout_weight="1"
+                    android:layout_marginStart="@dimen/margin_s"
                     android:text="💾 Descargar"
+                    android:textSize="@dimen/text_normal"
                     android:backgroundTint="@color/primary"
-                    android:textColor="@color/white"
-                    android:layout_marginEnd="@dimen/margin_s" />
+                    android:textColor="@color/white" />
+            </LinearLayout>
+
+            <!-- FILA 2: Editar / Eliminar -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center"
+                android:layout_marginTop="@dimen/margin_s">
 
                 <Button
                     android:id="@+id/btnEdit"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/button_height"
+                    android:layout_weight="1"
+                    android:layout_marginEnd="@dimen/margin_s"
                     android:text="✏️ Editar"
+                    android:textSize="@dimen/text_normal"
                     android:backgroundTint="@color/primary"
-                    android:textColor="@color/white"
-                    android:layout_marginEnd="@dimen/margin_s" />
+                    android:textColor="@color/white" />
 
                 <Button
                     android:id="@+id/btnDelete"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/button_height"
+                    android:layout_weight="1"
+                    android:layout_marginStart="@dimen/margin_s"
                     android:text="🗑️ Eliminar"
+                    android:textSize="@dimen/text_normal"
                     android:backgroundTint="@color/secondary"
                     android:textColor="@color/white" />
             </LinearLayout>
@@ -136,8 +155,9 @@
             <Button
                 android:id="@+id/btnBack"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="@dimen/button_height"
                 android:text="⬅ Volver"
+                android:textSize="@dimen/text_normal"
                 android:backgroundTint="@color/primary"
                 android:textColor="@color/white"
                 android:layout_marginTop="@dimen/margin_m" />
